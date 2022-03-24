@@ -26,7 +26,7 @@ pipeline {
                 }
             }
         }
-    stage('Deploy our image') {
+    stage('push to DHub') {
             steps {
                 script {
                     // Assume the Docker Hub registry by passing an empty string as the first parameter
