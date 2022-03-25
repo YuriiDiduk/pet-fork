@@ -14,15 +14,21 @@ pipeline {
    
     stage('SonarQScan') {
       steps {
-       withSonarQubeEnv(installationName: 'sq2') {
+       withSonarQubeEnv(installationName: 'sq1') {
         sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar'
         }
       }
     }
+    stage('DockerLint') {
+      steps {       
+            sh 'docker run --rm -i hadolint/hadolint < Dockerfile1' 
+             }
+        }
     stage('Building our image') {
             steps {
                 script {
                     dockerImage = docker.build "st251/petclinicx:$BUILD_NUMBER"
+                    dockerImage = docker.build "st251/petclinicx:latest"
                 }
             }
         }
@@ -30,7 +36,7 @@ pipeline {
             steps {
                 script {
                     // Assume the Docker Hub registry by passing an empty string as the first parameter
-                    docker.withRegistry('' , 'dockerhub-cred-st251') {
+                    docker.withRegistry('' , 'dockerhub-st251-jenkins') {
                         dockerImage.push()
                     }
                 }
@@ -48,6 +54,11 @@ pipeline {
              sh 'curl http://localhost:8181'
       }
    }
+   stage('Remove Unused docker image') {
+      steps{
+        sh "docker rmi "st251/petclinicx":latest"
+      }
+    }
   }
    
 }
