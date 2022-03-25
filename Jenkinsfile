@@ -56,7 +56,7 @@ pipeline {
    }
    stage('Remove Unused docker image') {
       steps{
-        sh 'docker rmi 'st251/petclinicx:latest''
+        sh 'docker rmi st251/petclinicx:latest'
       }
     }
   }
