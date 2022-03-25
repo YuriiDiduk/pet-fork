@@ -1,16 +1,13 @@
 pipeline {
     agent any
     stages {
-        stage('build && SonarQube analysis') {
-            steps {
-                withSonarQubeEnv('sq1') {
-                    // Optionally use a Maven environment you've configured already
-                    withMaven(maven:'Maven 3.5') {
-                        sh 'mvn clean package sonar:sonar'
-                    }
-                }
-            }
+     stage('SonarQScan') {
+       steps {
+        withSonarQubeEnv(installationName: 'sq1') {
+         sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar'
         }
+      }
+    }
         stage("Quality Gate") {
             steps {
                 timeout(time: 1, unit: 'HOURS') {
