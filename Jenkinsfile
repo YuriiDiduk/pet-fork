@@ -1,4 +1,9 @@
 pipeline {
+  environment {
+    registry = "st251/petclinica"
+    registryCredential = 'dockerhub-st251-jenkins'
+    dockerImage = ''
+  }
   agent any
   options {
     buildDiscarder(logRotator(numToKeepStr: '5'))
@@ -12,7 +17,7 @@ pipeline {
     stage('Building our image') {
             steps {
                 script {
-                    dockerImage = docker.build "st251/petclinica:$BUILD_NUMBER"
+                    dockerImage = docker.build $registry:$BUILD_NUMBER
                     dockerImage = docker.build "st251/petclinica:latest"
                 }
             }
