@@ -17,21 +17,20 @@ pipeline {
     stage('Building our image') {
             steps {
                 script {
-                    dockerImage = docker.build $registry:$BUILD_NUMBER
-                    dockerImage = docker.build "st251/petclinica:latest"
-                }
+                    app = docker.build("st251/petclinica")
+                }  
             }
         }
-    stage('push to DHub') {
+   stage('Push Docker Image') {
             steps {
                 script {
-                    // Assume the Docker Hub registry by passing an empty string as the first parameter
-                    docker.withRegistry('' , 'dockerhub-st251-jenkins') {
-                        dockerImage.push()
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-st251-jenkins') {
+                        app.push("${env.BUILD_NUMBER}")
+                        app.push("latest")
                     }
                 }
             }
-        } 
+        }
     
    stage('Remove Unused docker image') {
       steps{
