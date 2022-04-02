@@ -12,8 +12,8 @@ pipeline {
     stage('Building our image') {
             steps {
                 script {
-                    dockerImage = docker.build "st251/petclinicx:$BUILD_NUMBER"
-                    dockerImage = docker.build "st251/petclinicx:latest"
+                    dockerImage = docker.build "st251/petclinica:$BUILD_NUMBER"
+                    dockerImage = docker.build "st251/petclinica:latest"
                 }
             }
         }
@@ -30,7 +30,7 @@ pipeline {
     
    stage('Remove Unused docker image') {
       steps{
-        sh 'docker rmi st251/petclinicx:latest'
+        sh 'docker rmi st251/petclinica:latest'
       }
     }
   }
