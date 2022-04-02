@@ -3,15 +3,6 @@ pipeline {
   options {
     buildDiscarder(logRotator(numToKeepStr: '5'))
   }
-  
-   stages {
-    stage('Compile') {
-       steps {
-         sh 'mvn compile' //only compilation of the code
-       }
-    }   
-     
-
     stage('DockerLint') {
       steps {       
             sh 'docker run --rm -i hadolint/hadolint < Dockerfile' 
