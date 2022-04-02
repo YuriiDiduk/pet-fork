@@ -10,23 +10,8 @@ pipeline {
          sh 'mvn compile' //only compilation of the code
        }
     }   
-   
-   
-    stage('SonarQScan') {
-      steps {
-       withSonarQubeEnv(installationName: 'sq1') {
-        sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar'
-        }
-      }
-    }
-     stage("Quality Gate"){
-  timeout(time: 1, unit: 'HOURS') { // Just in case something goes wrong, pipeline will be killed after a timeout
-    def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
-    if (qg.status != 'OK') {
-      error "Pipeline aborted due to quality gate failure: ${qg.status}"
-    }
-  }
-}
+     
+
     stage('DockerLint') {
       steps {       
             sh 'docker run --rm -i hadolint/hadolint < Dockerfile' 
@@ -50,18 +35,7 @@ pipeline {
                 }
             }
         } 
-    stage('DComposeUp') {
-            steps {
-                      sh 'docker-compose up -d'
-            }
-        }
-    stage('HealthCheck') {
-      steps {
-            
-             sleep 300
-             sh 'curl http://localhost:8181'
-      }
-   }
+    
    stage('Remove Unused docker image') {
       steps{
         sh 'docker rmi st251/petclinicx:latest'
