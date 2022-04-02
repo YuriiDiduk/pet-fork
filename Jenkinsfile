@@ -3,7 +3,8 @@ pipeline {
   options {
     buildDiscarder(logRotator(numToKeepStr: '5'))
   }
-    stage('DockerLint') {
+ stages { 
+  stage('DockerLint') {
       steps {       
             sh 'docker run --rm -i hadolint/hadolint < Dockerfile' 
              }
@@ -33,4 +34,5 @@ pipeline {
       }
     }
   }
+}
    
