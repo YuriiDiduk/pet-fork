@@ -1,42 +1,35 @@
 pipeline {
-  environment {
-    registry = "st251/petclinica"
-    registryCredential = 'dockerhub-st251-jenkins'
-    dockerImage = ''
-  }
   agent any
   options {
     buildDiscarder(logRotator(numToKeepStr: '5'))
   }
- stages { 
-  stage('DockerLint') {
-      steps {       
-            sh 'docker run --rm -i hadolint/hadolint < Dockerfile' 
-             }
-        }
+  
+   stages {
+    stage('Compile') {
+       steps {
+         sh 'mvn compile' //only compilation of the code
+       }
+    }   
+   
     stage('Building our image') {
             steps {
                 script {
-                    app = docker.build("st251/petclinica")
-                }  
-            }
-        }
-   stage('Push Docker Image') {
-            steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-st251-jenkins') {
-                        app.push("${env.BUILD_NUMBER}")
-                        app.push("latest")
-                    }
+                    dockerImage = docker.build "st251/petclinic:$BUILD_NUMBER"
                 }
             }
         }
-    
-   stage('Remove Unused docker image') {
-      steps{
-        sh 'docker rmi st251/petclinica:latest'
-      }
-    }
+    stage('Deploy our image') {
+            steps {
+                script {
+                    // Assume the Docker Hub registry by passing an empty string as the first parameter
+                    docker.withRegistry('' , 'dockerhub-st251-jenkins') {
+                        dockerImage.push()
+                    }
+                }
+            }
+        } 
+ 
+ 
   }
-}
    
+} 
