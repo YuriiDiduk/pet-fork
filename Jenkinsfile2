@@ -34,7 +34,7 @@ pipeline {
                     docker.withRegistry('' , 'dockerhub-st251-jenkins') {
                         dockerImage.push()
                         sleep 60
-                    sh "docker rmi st251/web_server:${env.BUILD_NUMBER}"
+                    sh "docker rmi st251/petclinic:${env.BUILD_NUMBER}"
                     }
                 }
             }
