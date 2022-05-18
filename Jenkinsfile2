@@ -33,6 +33,8 @@ pipeline {
                     // Assume the Docker Hub registry by passing an empty string as the first parameter
                     docker.withRegistry('' , 'dockerhub-st251-jenkins') {
                         dockerImage.push()
+                        sleep 60
+                    sh "docker rmi st251/web_server:${env.BUILD_NUMBER}"
                     }
                 }
             }
