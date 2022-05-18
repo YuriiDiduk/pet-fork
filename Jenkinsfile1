@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    stages {
+    
      stage('SonarQScan') {
        steps {
         withSonarQubeEnv(installationName: 'sq1') {
@@ -28,4 +28,4 @@ pipeline {
             }
         }
     }
-} 
+ 
